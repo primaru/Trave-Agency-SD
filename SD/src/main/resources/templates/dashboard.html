@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Travel Agency Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('/dashboard-background.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      padding: 0;
+      margin: 0;
+    }
+    .container {
+      width: 80%;
+      margin: 40px auto;
+    }
+    .dashboard-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .journey-card {
+      width: 50%;
+      margin-left: 5%;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+
+    .journey-card img {
+      max-height: 100px;
+      transition: all 0.3s ease;
+    }
+
+    .journey-card h3 {
+      margin-top: 5px;
+      font-size: 18px;
+    }
+
+    .journey-card p {
+      color: #fff;
+    }
+
+    .journey-card:hover {
+    }
+    .feedback-card {
+      width: 38%;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 0;
+    }
+    .star-rating {
+      display: inline-flex;
+      color: gold;
+      font-size: 20px;
+      opacity: 1;
+    }
+
+    .filled-star {
+      color: gold;
+    }
+
+    .empty-star {
+      color: grey; /* Empty star color */
+    }
+    .profile-info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .profile-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      min-width: 100%;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    .dropdown-content a:hover {background-color: #f1f1f1;}
+    .feedback-preview {
+      display: inline;
+    }
+    .feedback-full {
+      display: none;
+    }
+    .toggle-feedback {
+      color: blue;
+      cursor: pointer;
+    }
+    .choose-btn, .confirm-btn {
+      cursor: pointer;
+      padding: 5px 10px;
+      margin-top: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      color: #333;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .heart-icon {
+      font-size: 24px;
+      color: grey;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .heart-icon.favorite {
+      color: red;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .header {
+      position: fixed;
+      top: 0;
+      right: 100px;
+      z-index: 10;
+      padding: 20px;
+    }
+    .favorite-btn {
+      color: black;
+      background-color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 3px 5px;
+      cursor: pointer;
+      text-align: center;
+      display: inline-flex;
+
+    }
+
+    .user-and-rating {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .user-icon {
+      margin-right: 5px;
+      display: inline-flex;
+    }
+    .heart-icon, .journey-heart-icon {
+      font-size: 20px;
+      color: grey;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .rating-container {
+      display: flex;
+      align-items: center;
+    }
+    .rating-value {
+      color: grey;
+
+      margin-left: 5px;
+    }
+  </style>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+<div class="profile-info" onclick="toggleDropdown()">
+  <span class="profile-icon">&#128100;</span>
+  <span th:text="${session.loggedInUser}">Username</span>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="/logout">Log Out</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Welcome to the Travel Agency Dashboard</h1>
+  <th:block th:each="index : ${#numbers.sequence(0, journeys.size() - 1)}">
+    <div class="dashboard-row">
+      <div class="journey-card" th:with="journey=${journeys[index]}">
+        <img th:src="${journey.imageUrl}" alt="Image of Journey">
+        <h3 th:text="${journey.destination}">Destination</h3>
+        <p th:text="${journey.description}">Description</p>
+        <button class="choose-btn" th:attr="data-journey-id=${journey.id}" onclick="showModal(this.getAttribute('data-journey-id'))">Choose</button>
+        <button class="favorite-btn" onclick="toggleFavorite(this)" th:data-journey-id="${journey.id}">
+          <span class="journey-heart-icon heart-icon" th:classappend="${favorites.contains(journey.id) ? 'favorite' : ''}">&#9825;</span>
+        </button>
+
+      </div>
+
+      <div class="feedback-card" th:if="${feedbacks.size() > index}" th:with="feedback=${feedbacks[index]}">
+        <div class="user-and-rating">
+          <div class="rating-container">
+            <span class="user-icon">&#128100;</span>
+            <div class="star-rating">
+              <th:block th:each="starNum : ${#numbers.sequence(1, 5)}">
+                <span th:class="${feedback.rating >= starNum} ? 'filled-star' : 'empty-star'">&#9733;</span>
+              </th:block>
+              <span class="rating-value" th:text="${feedback.rating}"></span>
+            </div>
+          </div>
+        </div>
+        <p>
+          <span class="feedback-preview" th:text="${#strings.length(feedback.message) > 100 ? #strings.substring(feedback.message, 0, 100) + '...' : feedback.message}"></span>
+          <span class="feedback-full" style="display: none;" th:text="${feedback.message}"></span>
+          <span class="toggle-feedback" onclick="toggleFeedback(this)">show more</span>
+        </p>
+      </div>
+
+
+
+
+
+    </div>
+  </th:block>
+</div>
+<div class="header">
+  <a href="/favorites">
+    <button>Favorites <span class="heart-icon">&#9829;</span></button>
+  </a>
+</div>
+
+<div id="dateModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <p>Select the dates for your journey:</p>
+    <label for="arrival-date-modal">Arrival Date:</label>
+    <input type="date" id="arrival-date-modal" name="arrival">
+    <label for="departure-date-modal">Departure Date:</label>
+    <input type="date" id="departure-date-modal" name="departure"><br><br>
+    <button class="confirm-btn" onclick="confirmJourney()">Confirm</button>
+  </div>
+</div>
+
+<script>
+  function toggleDropdown() {
+    var dropdown = document.getElementById("myDropdown");
+    if (dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+    } else {
+      dropdown.style.display = "block";
+    }
+  }
+  function toggleFavorite(element) {
+    var journeyId = element.getAttribute('data-journey-id');
+    var heartIcon = element.querySelector('.journey-heart-icon');
+
+
+    var isFavorite = heartIcon.classList.contains('favorite');
+    var action = isFavorite ? 'remove' : 'add';
+
+
+    heartIcon.classList.toggle('favorite');
+    heartIcon.innerHTML = isFavorite ? "&#9825;" : "&#9829;";
+
+
+    var data = "journeyId=" + encodeURIComponent(journeyId) + "&action=" + action;
+
+
+    var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/favorites", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader(csrfHeader, csrfToken);
+
+    xhr.onreadystatechange = function() {
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status !== 200) {
+
+          heartIcon.classList.toggle('favorite');
+          heartIcon.innerHTML = isFavorite ? "&#9829;" : "&#9825;";
+          console.error("Error in toggleFavorite AJAX request:", this.statusText);
+        }
+      }
+    };
+
+    xhr.send(data);
+  }
+
+
+
+
+
+  function toggleFeedback(element) {
+    var parentParagraph = element.parentElement;
+    var previewSpan = parentParagraph.querySelector('.feedback-preview');
+    var fullSpan = parentParagraph.querySelector('.feedback-full');
+
+    var isFullFeedbackShown = fullSpan.style.display === 'inline';
+
+    if (isFullFeedbackShown) {
+      fullSpan.style.display = 'none';
+      previewSpan.style.display = 'inline';
+      element.textContent = 'show more';
+    } else {
+
+      fullSpan.style.display = 'inline';
+      previewSpan.style.display = 'none';
+      element.textContent = 'hide';
+    }
+  }
+
+
+
+
+
+  function showModal(journeyId) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/selectJourney", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader("X-CSRF-TOKEN", document.querySelector('meta[name="_csrf"]').getAttribute('content'));
+
+    xhr.onreadystatechange = function() {
+      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        document.getElementById("dateModal").style.display = "block";
+      }
+    };
+
+    xhr.send("journeyId=" + encodeURIComponent(journeyId));
+  }
+
+
+
+
+
+  function closeModal() {
+    document.getElementById("dateModal").style.display = "none";
+  }
+
+
+    function confirmJourney() {
+      console.log("Confirm Journey function called");
+
+      var arrivalDate = document.getElementById('arrival-date-modal').value;
+      var departureDate = document.getElementById('departure-date-modal').value;
+
+      if (!arrivalDate || !departureDate) {
+        alert('Please select both arrival and departure dates.');
+        return;
+      }
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+
+
+      if (new Date(arrivalDate) < tomorrow) {
+        alert('Arrival date must be later than tomorrow.');
+        return;
+      }
+      if (new Date(arrivalDate) >= new Date(departureDate)) {
+        alert('Departure date must be later than arrival date.');
+        return;
+      }
+
+
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/confirm-journey';
+      var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      var csrfField = document.createElement('input');
+      csrfField.type = 'hidden';
+      csrfField.name = '_csrf';
+      csrfField.value = csrfToken;
+      form.appendChild(csrfField);
+
+      var arrivalField = document.createElement('input');
+      arrivalField.type = 'hidden';
+      arrivalField.name = 'arrivalDate';
+      arrivalField.value = arrivalDate;
+      form.appendChild(arrivalField);
+
+      var departureField = document.createElement('input');
+      departureField.type = 'hidden';
+      departureField.name = 'departureDate';
+      departureField.value = departureDate;
+      form.appendChild(departureField);
+
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.profile-info')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      for (var i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+
+    if (event.target == document.getElementById("dateModal")) {
+      closeModal();
+    }
+  }
+</script>
+</body>
+</html>

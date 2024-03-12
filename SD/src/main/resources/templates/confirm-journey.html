@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Confirm Journey</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #333333;
+      background-size: cover;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .ticket {
+      background-color: #fff;
+      border: 2px solid #ddd;
+      padding: 15px;
+      margin: 0 auto;
+      width: 50%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .ticket h2 {
+      color: #333;
+    }
+    .ticket p {
+      color: #555;
+      line-height: 1.6;
+    }
+    .info {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin: 15px 0;
+      border-left: 4px solid #4CAF50;
+    }
+    form {
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<div class="ticket">
+  <h2>Travel Itinerary</h2>
+  <div class="info">
+    <p><strong>Destination:</strong> <span th:text="${journey.destination}">Destination</span></p>
+    <p><strong>Description:</strong> <span th:text="${journey.description}">Description</span></p>
+    <p><strong>Arrival Date:</strong> <span th:text="${arrivalDate}">Arrival Date</span></p>
+    <p><strong>Departure Date:</strong> <span th:text="${departureDate}">Departure Date</span></p>
+    <p><strong>Total Price:</strong> <span th:text="${totalPrice} + ' EUR'">Price</span></p>
+  </div>
+
+  <form th:action="@{/processTransaction}" method="post">
+    <input type="text" name="address" placeholder="Enter delivery address" required/>
+    <button type="submit">Confirm Journey</button>
+  </form>
+</div>
+</body>
+</html>

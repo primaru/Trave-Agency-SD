@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Favorites</title>
+  <style>
+    .container {
+      width: 80%;
+      margin: auto;
+      text-align: center;
+    }
+    .journey-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background-color: #fff;
+    }
+    .journey-card h3 {
+      color: #333;
+      margin-bottom: 5px;
+    }
+    .journey-card p {
+      color: #666;
+      font-size: 14px;
+    }
+    .journey-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .journey-link:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Your Favorite Journeys</h1>
+
+  <div th:if="${favoriteJourneys.size() == 0}">
+    <p>No favorite journeys added yet.</p>
+  </div>
+
+  <div th:unless="${favoriteJourneys.size() == 0}">
+    <div th:each="journey : ${favoriteJourneys}" class="journey-card">
+      <a th:href="@{/journeys/{id}(id=${journey.id})}" class="journey-link">
+        <h3 th:text="${journey.destination}">Destination Name</h3>
+        <p th:text="${journey.description}">Journey Description</p>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

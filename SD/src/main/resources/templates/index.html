@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Our Travel Agency</title>
+  <style>
+    body {
+      font-family: "Georgia", "Times New Roman", Times, serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+      text-align: left;
+    }
+    header {
+      background-color: #0078d4;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      color: #fff;
+    }
+    header p, header p .button-text { /* Updated for specific targeting */
+      font-size: 1.2em;
+      margin-bottom: 1em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      color: #fff; /* Ensuring the text color is white */
+    }
+    a {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    a:hover {
+      background-color: #45a049;
+    }
+    .section {
+      background-color: #fff;
+      padding: 30px; /* Increased padding */
+      border-radius: 10px;
+      margin: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      border: 1px solid #0078d4; /* Added border */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition for hover effect */
+    }
+    .section:hover {
+      transform: translateY(-5px); /* Slight lift on hover */
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+      color: #0078d4; /* Theme color for headings */
+      margin-bottom: 0.5em;
+    }
+    ul {
+      list-style-type: none; /* Remove bullets */
+      padding: 0;
+    }
+    ul li {
+      margin-bottom: 0.5em;
+      padding-left: 20px;
+      position: relative;
+    }
+    ul li:before {
+      content: '•'; /* Custom bullet */
+      color: #4CAF50; /* Bullet color */
+      font-size: 20px; /* Bullet size */
+      position: absolute;
+      left: 0;
+    }
+  </style>
+
+</head>
+<body>
+<header>
+  <h1>Welcome to Our Travel Agency!</h1>
+  <p>Your Gateway to <span class="button-text">Elegant Adventures</span></p>
+  <a href="/login">Explore Our Tours</a>
+</header>
+
+<div class="section">
+  <h2>Why Choose Us?</h2>
+  <p>We are committed to making your travel dreams come true. Here's why you should choose our agency:</p>
+  <ul>
+    <li>Experienced Travel Experts</li>
+    <li>Customized Itineraries</li>
+    <li>Competitive Prices</li>
+    <li>24/7 Customer Support</li>
+  </ul>
+</div>
+
+<div class="section" id="tours">
+  <h2>Contact Us</h2>
+  <p>Have questions or need assistance? Contact us today!</p>
+  <p>Email: info@travelagency.com</p>
+  <p>Phone: +1 (123) 456-7890</p>
+</div>
+
+</body>
+</html>

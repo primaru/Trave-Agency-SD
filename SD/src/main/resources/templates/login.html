@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Travel Agency Login</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: url('/login-background.png') no-repeat center center fixed; background-size: cover; background-color: black }
+    .container { width: 300px; margin: 100px auto; padding: 20px; background: rgba(255, 255, 255, 0.8); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h1 { color: #0073e6; text-align: center; }
+    label { display: block; margin-top: 10px; }
+    input[type="text"], input[type="password"] { width: 100%; padding: 8px; margin: 6px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+    button { width: 100%; background-color: #0073e6; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .error { color: red; text-align: center; }
+    #registerForm { display: none; margin-top: 20px; }
+  </style>
+  <script>
+    function toggleRegisterForm() {
+      var x = document.getElementById("registerForm");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+    function showError(message) {
+      var errorMessageDiv = document.getElementById("errorMessage");
+      errorMessageDiv.style.display = "block";
+      errorMessageDiv.textContent = message;
+    }
+    window.onload = function() {
+      // Check if registration form should be displayed
+      if ("${showRegistrationForm}" === "true") {
+        document.getElementById("registerForm").style.display = "block";
+      }
+    };
+
+    function toggleRegisterForm() {
+      var x = document.getElementById("registerForm");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Login</h1>
+  <!-- Error message display -->
+  <div th:if="${loginError}" class="error" th:text="${loginError}"></div>
+  <form th:action="@{/login}" method="post">
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
+    </div>
+    <div>
+      <button type="submit">Login</button>
+    </div>
+  </form>
+  <p>Don't have an account yet? <a href="#" onclick="toggleRegisterForm()">Register here</a></p>
+</div>
+<div class="container" id="registerForm" th:style="${showRegistrationForm} ? 'display: block;' : 'display: none;'">
+  <h1>Register</h1>
+  <div id="errorMessage" style="color: red; display: none;">Invalid username or password</div>
+  <div th:if="${registrationError}" th:text="${registrationError}" style="color: red;"></div>
+
+  <form th:action="@{/register}" method="post">
+    <div>
+      <label for="newUsername">Username:</label>
+      <input type="text" id="newUsername" name="newUsername" required />
+    </div>
+    <div>
+      <label for="newPassword">Password:</label>
+      <input type="password" id="newPassword" name="newPassword" required />
+    </div>
+    <div>
+      <button type="submit">Register</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

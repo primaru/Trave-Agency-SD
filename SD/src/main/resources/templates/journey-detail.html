@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${journey.description}">Journey Name</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      border-radius: 10px;
+    }
+    h1 {
+      font-size: 2em;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 th:text="${journey.description}">Journey Name</h1>
+  <p th:text="${journey.destination}">Journey Destination</p>
+  <img th:src="${journey.imageUrl}" alt="Image of Journey Destination"/>
+  <!-- Add more journey details here -->
+</div>
+</body>
+</html>
